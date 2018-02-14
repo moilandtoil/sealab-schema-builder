@@ -1,6 +1,6 @@
 {
   "name": "@moilandtoil/sealab-schema-builder",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A library for programatically managing and generating GraphQL typeDefs and resolvers, while handling authorization",
   "main": "index.js",
   "scripts": {
