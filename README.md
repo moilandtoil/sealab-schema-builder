@@ -40,6 +40,7 @@ Assuming a context with a structure as described below
 
 One could define a guard checking if a user is authenticated with
 
+```
 class Authenticated extends Guard {
   id() {
     return "authenticated"
@@ -49,9 +50,11 @@ class Authenticated extends Guard {
     return (context.authToken !== null);
   }
 }
+```
 
 And define a guard to check if a user is an admin with
 
+```
 class IsAdmin extends Guard {
   id() {
     return "is_admin"
@@ -61,6 +64,7 @@ class IsAdmin extends Guard {
     return (context.user && context.user.isAdmin);
   }
 }
+```
 
 ## SchemaBuilder
 
@@ -84,38 +88,54 @@ returns an array of guard classes
 returns a boolean if all guard validations return true for a given context
 
 `guardIds` is an array of guard ids to validate.
+
 `context` a user defined GraphQL context object.
 
 ### addTypeDef(typeDef, [guards = []], [group = null]
 Adds a single typeDef to the schema builder. Any guards passed are associated with the typDef when generating the full list
+
+
 `typeDef` a string containing the typeDef
+
 `guards` an array of guard ids to associate with the typeDef
+
 `group` Denotes a typeDef as an entrypoint type of data type. Valid group options are `query`, `mutation`, `subscription`, or `null`.
 A null tells the builder the typeDef is a top level datatype.  If it is one of the other options it will nest the typeDef in the corresponding entrypoint schemas
 
 ### addTypeResolver(resolverName, resolverDef, [guards = []])
 Adds a single resolver to the schema builder for a top level typeDef
 
+
 `resolverName` is a string that should match to a typeDef type name.  ie., if you have a typeDef of `type Foo { id: String }`, `resolverName` should be `Foo`
+
 `resolverDef` is a resolver object for a typeDef. ie., if you have a typeDef of `type Foo { id: String }`, `resolverDef` could be `{ id: function(value) { return value.id } }`
+
 `guards` is an optional array of guard ids.  The guards must have already been registered
 
 ### addResolver(resolverName, resolverDef, [guards = []])
 Adds a single resolver to the schema builder for a specific group
 
+
 `resolverName` is a string that should make to a typeDef type name.  ie., if you have a typeDef of `type Foo { id: String }`, `resolverName` should be `Foo`
+
 `resolverDef` is a resolver object for a typeDef. ie., if you have a typeDef of `type Foo { id: String }`, `resolverDef` could be `{ id: function(value) { return value.id } }`
+
 `group` Denotes a resolver as an entrypoint resolver of data type resolver. Valid group options are `query`, `mutation`, `subscription`, or `null`.
         A null tells the builder the resolver is for a top level data type.  If it is one of the other options it will nest the resolver in the corresponding entrypoint object
+
 `guards` an optional array of guard ids.  The guards must have already been registered
 
 ### addEntrypoint(name, group, typeDef, resolver, [guards = []])
 Adds the typeDef and resolver for an entrypoint all at once.  This is the perferred method for adding entrypoints as ensure consistency.
 
 `name` is a string that should match to a typeDef type name.  ie., if you have a typeDef of `type Foo { id: String }`, `name` should be `Foo`
+
 `group` the entrypoint group, one of `query`, `mutation`, or `subscription`
+
 `typeDef` the GraphQL typeDef for the entrypoint
+
 `resolver` the resolver object containing functions that map to the typeDef
+
 `guards` an optional array of guard ids.  The guards must have already been registered
 
 ## genearteTypeDefs(context, guardWhitelist = null)
@@ -123,7 +143,9 @@ Generates an array of typeDefs from all the registered typeDefs in the schema bu
 Any associated guard of a typeDef that is checked and returns `false` will result in the typeDef being omitted from the generated schema
 
 `context` A user defined GraphQL context to validate against the guards
+
 `guardWhitelist` An array of guard ids.  If omitted will result in all registered guards being whitelisted.
+
 When generating a schema, the intersection of guards associated with a typeDef and whitelistGuards are validated, all validations must return `true` for the typeDef to be included in the final generated array.
 
 ## generateResolvers(context, guardWhitelist = null)
@@ -132,7 +154,9 @@ A guardWhitelist can be specified to only check specific guards.
 Any associated guard of a resolver that is checked and returns `false` will result in the resolver being omitted from the generated schema
 
 `context` A user defined GraphQL context to validate against the guards
+
 `guardWhitelist` An array of guard ids.  If omitted will result in all registered guards being whitelisted.
+
 When generating a schema, the intersection of guards associated with a resolver and whitelistGuards are validated, all validations must return `true` for the resolver to be included in the final generated object.
 
 # Example
