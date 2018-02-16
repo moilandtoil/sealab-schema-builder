@@ -125,6 +125,19 @@ Adds a single resolver to the schema builder for a specific group
 
 `guards` an optional array of guard ids.  The guards must have already been registered
 
+
+### addType(name, typeDef, resolverDef, [guards = []])
+Adds a data type with the typeDef and resolver.
+
+`name` is a string that should make to a typeDef type name.  ie., if you have a typeDef of `type Foo { id: String }`, `name` should be `Foo`
+
+`typeDef` a string containing the GraphQL typeDef
+
+`resolverDef` is a resolver object for a typeDef. ie., if you have a typeDef of `type Foo { id: String }`, `resolverDef` could be `{ id: function(value) { return value.id } }`
+
+`guards` an optional array of guard ids.  The guards must have already been registered
+
+
 ### addEntrypoint(name, group, typeDef, resolver, [guards = []])
 Adds the typeDef and resolver for an entrypoint all at once.  This is the perferred method for adding entrypoints as ensure consistency.
 

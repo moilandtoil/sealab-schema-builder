@@ -113,6 +113,10 @@ class SchemaBuilder {
     }
   }
 
+  addType(name, typeDef, resolver, guards = []) {
+    return this.addEntrypoint(name, null, typeDef, resolver, guards);
+  }
+
   addEntrypoint(name, group, typeDef, resolver, guards = []) {
     this.addTypeDef(typeDef, guards, group);
     this.addResolver(name, resolver, group, guards);
