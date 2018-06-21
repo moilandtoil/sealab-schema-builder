@@ -91,7 +91,7 @@ returns a boolean if all guard validations return true for a given context
 
 `context` a user defined GraphQL context object.
 
-### addTypeDef(typeDef, [guards = []], [group = null]
+### addTypeDef(typeDef, \[guards = \[\]\], \[group = null\]
 Adds a single typeDef to the schema builder. Any guards passed are associated with the typDef when generating the full list
 
 
@@ -102,7 +102,7 @@ Adds a single typeDef to the schema builder. Any guards passed are associated wi
 `group` Denotes a typeDef as an entrypoint type of data type. Valid group options are `query`, `mutation`, `subscription`, or `null`.
 A null tells the builder the typeDef is a top level datatype.  If it is one of the other options it will nest the typeDef in the corresponding entrypoint schemas
 
-### addTypeResolver(resolverName, resolverDef, [guards = []])
+### addTypeResolver(resolverName, resolverDef, \[guards = \[\]\])
 Adds a single resolver to the schema builder for a top level typeDef
 
 
@@ -112,7 +112,7 @@ Adds a single resolver to the schema builder for a top level typeDef
 
 `guards` is an optional array of guard ids.  The guards must have already been registered
 
-### addResolver(resolverName, resolverDef, [guards = []])
+### addResolver(resolverName, resolverDef, \[guards = \[\]\])
 Adds a single resolver to the schema builder for a specific group
 
 
@@ -126,7 +126,7 @@ Adds a single resolver to the schema builder for a specific group
 `guards` an optional array of guard ids.  The guards must have already been registered
 
 
-### addType(name, typeDef, resolverDef, [guards = []])
+### addType(name, typeDef, resolverDef, \[guards = \[\]\])
 Adds a data type with the typeDef and resolver.
 
 `name` is a string that should make to a typeDef type name.  ie., if you have a typeDef of `type Foo { id: String }`, `name` should be `Foo`
@@ -138,7 +138,7 @@ Adds a data type with the typeDef and resolver.
 `guards` an optional array of guard ids.  The guards must have already been registered
 
 
-### addEntrypoint(name, group, typeDef, resolver, [guards = []])
+### addEntrypoint(name, group, typeDef, resolver, \[guards = \[\]\])
 Adds the typeDef and resolver for an entrypoint all at once.  This is the perferred method for adding entrypoints as ensure consistency.
 
 `name` is a string that should match to a typeDef type name.  ie., if you have a typeDef of `type Foo { id: String }`, `name` should be `Foo`

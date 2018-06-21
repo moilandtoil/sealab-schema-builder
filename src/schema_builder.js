@@ -47,8 +47,11 @@ class SchemaBuilder {
 
   validateGuards(guardIds, context) {
     for (let guardId of guardIds) {
-      let guard = this.getGuardInstance(guardId);
-      if (!guard.validate(context)) {
+      const parsed = this.parseGuard(guardId);
+      const { id, extras } = parsed;
+
+      let guard = this.getGuardInstance(id);
+      if (!guard.validate(context, extras)) {
         return false;
       }
     }
@@ -143,7 +146,7 @@ class SchemaBuilder {
       let groupTypeDefs = [];
 
       for (let typeDef of this.typeDefs[group]) {
-        if (!this.validateGuards(_.intersection(typeDef.guards, guardWhitelist), context)) {
+        if (!this.validateGuards(this.determineRunnableGuards(typeDef.guards, guardWhitelist), context)) {
           continue;
         }
         groupTypeDefs.push(typeDef.definition);
@@ -175,7 +178,6 @@ class SchemaBuilder {
         }
 
         let resolver = this.resolvers[null][name];
-
         if (!this.validateGuards(resolver.guards, context)) {
           continue;
         }
@@ -195,9 +197,9 @@ class SchemaBuilder {
           continue;
         }
 
-        let resolver = this.resolvers[group][name];
 
-        if (!this.validateGuards(_.intersection(resolver.guards, guardWhitelist), context)) {
+        let resolver = this.resolvers[group][name];
+        if (!this.validateGuards(this.determineRunnableGuards(resolver.guards, guardWhitelist), context)) {
           continue;
         }
 
@@ -208,6 +210,38 @@ class SchemaBuilder {
     }
 
     return resolvers;
+  }
+
+  parseGuard(guard) {
+    let parts = guard.split(":");
+    let id = parts[0];
+    let extras = [];
+    if (parts.length > 1) {
+      extras = parts[1].split(",");
+    }
+    return {
+      id: id,
+      extras: extras
+    }
+  }
+
+  inGuardlist(guard, guardList) {
+    const parsed = this.parseGuard(guard);
+    return guardList.indexOf(parsed.id) >= 0;
+  }
+
+  determineRunnableGuards(guardList, whitelist) {
+    if (!_.isArray(guardList)) {
+      guardList = [guardList];
+    }
+    let guards = [];
+    for(let guard of guardList) {
+      if (!this.inGuardlist(guard, whitelist)) {
+        continue;
+      }
+      guards.push(guard);
+    }
+    return guards;
   }
 }
 

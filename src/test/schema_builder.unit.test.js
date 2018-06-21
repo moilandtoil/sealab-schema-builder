@@ -25,6 +25,16 @@ class OtherGuard extends SchemaBuilderGuard {
   }
 }
 
+class ComplexGuard extends SchemaBuilderGuard {
+  id() {
+    return "complex_guard";
+  }
+
+  validate(context, extras) {
+    return context.perms.indexOf(extras[0]) >= 0;
+  }
+}
+
 String.prototype.removeWhitespace = function() {
   return this.replace(/\n/g, '').replace(/\s/g, '');
 };
@@ -173,7 +183,7 @@ describe("Testing schema builder", () => {
     let builder = null;
     beforeEach(() => {
       builder = new SchemaBuilder();
-      builder.registerGuards([TestGuard, OtherGuard]);
+      builder.registerGuards([TestGuard, OtherGuard, ComplexGuard]);
     });
 
     // single guard check on null group
@@ -220,7 +230,21 @@ describe("Testing schema builder", () => {
       let resolvers = builder.generateResolvers({ foo: "derp" });
       expect(Object.keys(resolvers.Query).length).toEqual(0);
     });
-  });
+
+    // complex guard check
+    test("with a type added with #addResolver(), complex guard match", () => {
+      builder.addResolver('Foo', { id: function(value) { return value.id } }, "query", ['complex_guard:test']);
+
+      let resolvers = builder.generateResolvers({ perms: ["test"] });
+      expect(resolvers.Query.Foo.id({id: "bar"})).toEqual("bar");
+    });
+
+    test("with a type added with #addResolver(), complex guard mismatch", () => {
+      builder.addResolver('Foo', { id: function(value) { return value.id } }, "query", ['complex_guard:test']);
+
+      let resolvers = builder.generateResolvers({ perms: [] });
+      expect(Object.keys(resolvers.Query).length).toEqual(0);
+    });  });
 
   describe("when generating schema and resolvers", () => {
 
