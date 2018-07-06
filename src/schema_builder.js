@@ -52,7 +52,10 @@ class SchemaBuilder {
 
       let guard = this.getGuardInstance(id);
       if (!guard.validate(context, extras)) {
-        return false;
+        throw new Error({
+          guard: id,
+          extras: extras,
+        });
       }
     }
     return true;
@@ -132,7 +135,10 @@ class SchemaBuilder {
     let typeDefs = [];
 
     for (let typeDef of this.typeDefs[null]) {
-      if (!this.validateGuards(typeDef.guards, context)) {
+      try {
+        this.validateGuards(typeDef.guards, context);
+      } catch (err) {
+        // skip on failure
         continue;
       }
       typeDefs.push(typeDef.definition);
@@ -146,7 +152,10 @@ class SchemaBuilder {
       let groupTypeDefs = [];
 
       for (let typeDef of this.typeDefs[group]) {
-        if (!this.validateGuards(this.determineRunnableGuards(typeDef.guards, guardWhitelist), context)) {
+        try {
+          this.validateGuards(this.determineRunnableGuards(typeDef.guards, guardWhitelist), context)
+        } catch (err) {
+          // skip on failure
           continue;
         }
         groupTypeDefs.push(typeDef.definition);
@@ -178,7 +187,10 @@ class SchemaBuilder {
         }
 
         let resolver = this.resolvers[null][name];
-        if (!this.validateGuards(resolver.guards, context)) {
+        try {
+          this.validateGuards(resolver.guards, context)
+        } catch (err) {
+          // skip on failure
           continue;
         }
         resolvers[name] = resolver.definition;
@@ -199,7 +211,10 @@ class SchemaBuilder {
 
 
         let resolver = this.resolvers[group][name];
-        if (!this.validateGuards(this.determineRunnableGuards(resolver.guards, guardWhitelist), context)) {
+        try {
+          this.validateGuards(this.determineRunnableGuards(resolver.guards, guardWhitelist), context);
+        } catch (err) {
+          // skip on failure
           continue;
         }
 

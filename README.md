@@ -86,6 +86,7 @@ returns an array of guard classes
 
 ### validateGuards(guardIds, context)
 returns a boolean if all guard validations return true for a given context
+throws an error on the first occurrence of a guard validation failure
 
 `guardIds` is an array of guard ids to validate.
 
