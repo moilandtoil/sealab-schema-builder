@@ -3,6 +3,17 @@
 const _ = require("lodash");
 const SchemaBuilderItem = require("./schema_builder_item.js");
 
+class GuardError extends Error {
+  constructor(guardId, extras) {
+    super("Guard validation failed");
+    this.name = this.constructor.name;
+    this.guardId = guardId;
+    this.guardExtras = extras;
+
+    Error.captureStackTrace(this, this.constructor);
+  }
+}
+
 class SchemaBuilder {
   constructor() {
     this.entrypoints = ['query', 'mutation', 'subscription'];
@@ -52,10 +63,7 @@ class SchemaBuilder {
 
       let guard = this.getGuardInstance(id);
       if (!guard.validate(context, extras)) {
-        throw new Error({
-          guard: id,
-          extras: extras,
-        });
+        throw new GuardError(id, extras);
       }
     }
     return true;
